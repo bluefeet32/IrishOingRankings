@@ -1,0 +1,56 @@
+The point of a runner in Sweden The list is calculated as the average of the six best results in exactly one year back in time.
+
+This point is normally updated daily.
+
+The point of a competition based on the three best times and the three with the best score in the class.
+
+Points (P) = (Free time - (Tm - Pm / ((75 + Pm) / Tm))) x ((75 + Pm) / Tm)
+
+Explanations:
+• Pm corresponds to the average score for the three best ranked as the start of the class.
+• Tm corresponds to the average time of the three best times in the results list.
+• For the ladies exchanged number 75 towards 60th
+• Correction ratio (Kk) indicates the ratio of the correction period and the average points / time and calculated for ladies Kk = (60 + Pm) / Tm and for men Kk = (75 + Pm) / Tm
+• base time (Tb) corresponds to the time the country's top-ranked theoretically would have received on the current path and is calculated as Tb = Tm - Pm / Kk
+• The point (P) is calculated for each competitor according to P = (Free time - Tb) x Kk
+• The calculation can be simplified somewhat by first calculating Kk and then using the relation P = Custom time x Kk - 60 (damklass) or P = Custom time x Kk - 75 (Mr class)
+
+Exceptions and conditions
+• To prevent unrealistic low score victories in smaller classes allowed the Middle Ages be no more than 10% after the winning time.
+• Classes with less than three starters are not expected.
+• Highest possible score per race is 300 points.
+• If out of six results achieved fills out the results with fictitious 300-pointers.
+• When calculating a student's score is always used the average score of the three lowest points of the Sweden list among the starters, even in rankings merit classes. This means that the points do not need to belong ranking participants.
+
+For the specific lists are long distance, middle distance, sprint distance and nattävlingar based runner's score on the top three results in each category. This means for example that the top three sprint results are the basis for the runner's position on the sprint list.
+
+However consists average score of the three with the best score in the class at a competition, ie the so-called calculation point, the runners' average of the six best results in exactly one year back in time for distances long distance and middle distance, as well as the competition date night. This means for example that the average score of the three with the best score in the class on a sprint race consists of profit made on the long-haul, medium-haul and nattävlingar.
+
+translated from:
+Poängen hos en löpare i Sverigelistan beräknas som medelvärdet av de sex bästa resultaten under exakt ett år tillbaks i tiden.
+
+Denna poäng uppdateras normalt dagligen.
+
+Poängen på en tävling grundar sig på de tre bästa tiderna och de tre med bäst poäng i klassen.
+
+Poäng (P) = (Egen tid - (Tm - Pm/((75 + Pm)/Tm))) x ((75 + Pm)/Tm)
+
+Förklaringar:
+• Pm motsvarar medelpoängen för de tre bäst rankade som startar i klassen.
+• Tm motsvarar medeltiden av de tre bästa tiderna i resultatlistan.
+• För damer byts siffran 75 ut mot 60.
+• Korrektionskvoten (Kk) anger förhållandet mellan korrektionstiden och medelpoäng/tid och beräknas för damer som Kk = (60 + Pm)/Tm och för herrar Kk = (75 + Pm)/Tm
+• Bastiden (Tb) motsvaras av den tid landets bäst rankade teoretiskt sett skulle ha erhållit på aktuell bana och beräknas enligt Tb = Tm - Pm/Kk
+• Poängen (P) beräknas för varje tävlande enligt P = (Egen tid - Tb) x Kk
+• Uträkningen kan förenklas något genom att först beräkna Kk och sedan använda sambandet P = Egen tid x Kk – 60 (damklass) eller P = Egen tid x Kk - 75 (herrklass)
+
+Undantag och villkor
+• För att förhindra orealistisk låg segrarpoäng i mindre klasser tillåts medeltiden ligga högst 10 % efter segrartiden.
+• Klasser med färre än tre startande bedöms ej.
+• Högsta möjliga poäng per tävling är 300 poäng.
+• Om ej sex resultat uppnåtts fylls resultaten ut med fiktiva 300-poängare.
+• Vid beräkning av en deltagares poäng används alltid medelpoängen av de tre lägsta poängerna i Sverigelistan bland de startande, även i rankingmeriterande klasser. Det betyder att poängerna inte behöver tillhöra rankade deltagare.
+
+För de särskilda listor som finns för långdistans, medeldistans, sprintdistans och för nattävlingar grundar sig löparens poäng på de tre bästa resultaten inom respektive kategori. Det betyder till exempel att de tre bästa sprintresultaten ligger till grund för löparens placering på sprintlistan.
+
+Däremot består snittpoängen på de tre med bäst poäng i klassen på en tävling, dvs den så kallade beräkningspoängen, av löparnas medelvärde av de sex bästa resultaten under exakt ett år tillbaks i tiden för distanserna långdistans och medeldistans, samt tävlingstidpunkten natt. Det betyder till exempel att snittpoängen på de tre med bäst poäng i klassen på en sprinttävling består av resultat gjorda på långdistans-, medeldistans- och på nattävlingar. 
