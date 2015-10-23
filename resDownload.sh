@@ -7,17 +7,25 @@ for z in 25; do
     mkdir -p $z
     cd $z
 #    for i in `seq -w 01 99`; do
-    for i in `seq -w 01 10`; do
+    for i in `seq -w 03 05`; do
         echo $i
         curl -s "http://www.orienteering.ie/results/files/$z/${z}${i}.csv" > ${z}${i}.csv
-        grep Brown ${z}${i}.csv
+#        grep Brown ${z}${i}.csv
         if [[ $? == 0 ]]; then
             sed 's/"//g' ${z}${i}.csv > tmp
             #awk -F ';' '{print $40}' tmp
+            touch resultsPoints
+            lines=$(wc -l ${z}${i}.csv | awk '{print $1-1}')
+            for line in `seq -w 01 $lines`; do
+                (grep $(cat tmp | head -n $line | tail -n 1 | awk '{print $1";"$2}') pointsDB || printf "\n") | awk -F ';' '{print $3}' #>> resultsPoints
+            done
+            echo "pasting"
+            paste -d ";" resultsPoints ${z}${i}.csv
             touch fullRes
             for course in Brown Blue Green; do 
                 echo course $course
-                awk -F ';' '{print $4,"\t",$5,"\t",$12"\t",$16,"\t",$40}' tmp | grep $course > ${course}Res
+                #must add last column of runnings rankings at this points
+                awk -F ';' '{print $1,"\t",$5,"\t",$6,"\t",$13"\t",$17,"\t",$41}' tmp | grep $course > ${course}Res
                 #awk '{sum += $3; sumsq=$1*$1} END { if (NR > 0) print sqrt(sumsq/NR - (sum/NR)**2)}' ${course}Res #| awk -F ':' '{print $1+$2/60}' | head -n 1
                 awk '{print $3}' ${course}Res | awk -F ':' '{print $1+$2/60}' > ${course}Times
                 mean=$(awk '{sum+=$1} END { print (sum/NR)}' ${course}Times)
@@ -35,9 +43,4 @@ done
 #find 
 
 #for line in 1..$(wc -l ${z}${c}); do
-touch resultsPoints
-lines=$(wc -l 2504tmp.csv | awk '{print $1-1}'
-for i in `seq 1 $lines`; do
-    (grep $(cat pointsRes2504 | head -n $i | tail -n 1 | awk '{print $1";"$2}') pointsDB || printf "\n") | awk -F ';' '{print $3}'
-done
 
