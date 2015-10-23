@@ -31,3 +31,13 @@ for z in 25; do
         fi
     done
 done
+
+#find 
+
+#for line in 1..$(wc -l ${z}${c}); do
+touch resultsPoints
+lines=$(wc -l 2504tmp.csv | awk '{print $1-1}'
+for i in `seq 1 $lines`; do
+    (grep $(cat pointsRes2504 | head -n $i | tail -n 1 | awk '{print $1";"$2}') pointsDB || printf "\n") | awk -F ';' '{print $3}'
+done
+
