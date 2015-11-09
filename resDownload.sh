@@ -36,17 +36,28 @@ for z in 25; do
             paste -d ";" resultsPoints tmp > newTmp #${z}${i}.csv
             mv newTmp tmp
             touch fullRes
-            for course in Brown Blue Green; do 
+            for course in Brown; do # Blue Green; do 
                 echo course $course
                 #must add last column of runnings rankings at this points
+                #columns we select are:
+                #   ranking points; surname; forename; time; club; course
                 awk -F ';' '{print $1";"$5";"$6";"$13";"$17";"$41}' tmp | grep $course > ${course}Res
                 #awk '{sum += $3; sumsq=$1*$1} END { if (NR > 0) print sqrt(sumsq/NR - (sum/NR)**2)}' ${course}Res #| awk -F ':' '{print $1+$2/60}' | head -n 1
                 awk -F ';' '{print $4}' ${course}Res | awk -F ':' '{print $1+$2/60}' > ${course}Times
+                meanPoints=$(awk '{sum+=$1} END { print (sum/NR) }' ${course}Res)
+                stdDevPoints=$(awk -v sum=$meanPoints '{array[NR]=$1} END {for(x=1;x<=NR;x++) {susq+=((array[x]-sum)**2);}print sqrt(susq/NR)}' ${course}Res)
+                echo meanPoints $meanPoints
+                echo stdDevPoints $stdDevPoints
                 mean=$(awk '{sum+=$1} END { print (sum/NR) }' ${course}Times)
                 echo mean $mean
                 stdDev=$(awk -v sum=$mean '{array[NR]=$1} END {for(x=1;x<=NR;x++) {susq+=((array[x]-sum)**2);}print sqrt(susq/NR)}' ${course}Times)
                 echo stdDev $stdDev
-                awk -v sDev=$stdDev -v mean=$mean '{if ( $1 <= mean ) { print 1000+(100*(sqrt(($1-mean)**2))/sDev) } else { print 1000-(100*sqrt(($1-mean)**2)/sDev) } }' ${course}Times > ${course}Points
+                awk -v sDev=$stdDev -v mean=$mean -v mP=$meanPoints sP=$stdDevPoints'{ print 1000+(100*(mean - $1)/sDev) }' ${course}Times > ${course}Points
+                #Points = mP + ( sP * ( - time + meanTime ) ) / sDev
+                awk -v sDev=$stdDev -v mean=$mean -v mP=$meanPoints sP=$stdDevPoints'{ print mP + ( sP * ( $1 - mean - $1 ) / sDev ) }' ${course}Times > ${course}RankPoints
+                # Ensure 0 is the lowest possible score
+                awk '{if ( $1 < 0 ) { print 0 } else { print $1 } }' ${course}RankPoints > ${course}tmp
+                mv ${course}tmp ${course}RankPoints
 #    #            cat ${course}Points
 #                paste ${course}Res ${course}Points >> pointsRes${z}${i}
             done
@@ -58,3 +69,6 @@ done
 
 #for line in 1..$(wc -l ${z}${c}); do
 
+#old points calculation
+#                awk -v sDev=$stdDev -v mean=$mean -v mP=$meanPoints sP=$stdDevPoints'{if ( $1 <= mean ) { print 1000+(100*(sqrt(($1-mean)**2))/sDev) } else { print 1000-(100*sqrt(($1-mean)**2)/sDev) } }' ${course}Times > ${course}Points
+#                awk -v sDev=$stdDev -v mean=$mean -v mP=$meanPoints sP=$stdDevPoints'{if ( $1 <= mean ) { print mP+(sP*(sqrt(($1-mean)**2))/sDev) } else { print mP-(sP*sqrt(($1-mean)**2)/sDev) } }' ${course}Times > ${course}RankPoints
