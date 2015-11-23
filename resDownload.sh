@@ -1,5 +1,7 @@
 #! /bin/bash
 
+source dbModify.sh
+
 #2503 is http://www.orienteering.ie/result2?oaction=fullSIResult&id=2503
 #League table at http://orienteering.ie/results/leagues/show_table.php?league=Family+Day&date_from=04%2F15&date_to=06%2F15&best_of[Black]=1&best_of[Brown]=7&best_of[Blue]=8&best_of[Green]=8&best_of[Red]=8&best_of[Orange]=8&best_of[Yellow]=7&best_of[Brow+n]=1
 #FIXME have to watch out for people's names matching courses
@@ -36,6 +38,8 @@ for z in 25; do
             paste -d ";" resultsPoints tmp > newTmp #${z}${i}.csv
             mv newTmp tmp
             touch fullRes
+            rm pointsRes${z}${i}
+            touch pointsRes${z}${i}
             for course in Brown; do # Blue Green; do 
                 echo course $course
                 #must add last column of runnings rankings at this points
@@ -54,13 +58,17 @@ for z in 25; do
                 echo stdDev $stdDev
                 awk -v sDev=$stdDev -v mean=$mean -v mP=$meanPoints sP=$stdDevPoints'{ print 1000+(100*(mean - $1)/sDev) }' ${course}Times > ${course}Points
                 #Points = mP + ( sP * ( - time + meanTime ) ) / sDev
-                awk -v sDev=$stdDev -v mean=$mean -v mP=$meanPoints sP=$stdDevPoints'{ print mP + ( sP * ( $1 - mean - $1 ) / sDev ) }' ${course}Times > ${course}RankPoints
+                awk -v sDev=$stdDev -v mean=$mean -v mP=$meanPoints sP=$stdDevPoints'{ print mP + ( sP * ( mean - $1 ) / sDev ) }' ${course}Times > ${course}RankPoints
                 # Ensure 0 is the lowest possible score
                 awk '{if ( $1 < 0 ) { print 0 } else { print $1 } }' ${course}RankPoints > ${course}tmp
                 mv ${course}tmp ${course}RankPoints
-#    #            cat ${course}Points
-#                paste ${course}Res ${course}Points >> pointsRes${z}${i}
+
+                # Paste the points into the result list
+                paste -d ";" ${course}RankPoints ${course}Res >> pointsRes${z}${i}
+
             done
+
+#            dbModify($z, $i);
         fi
     done
 done
