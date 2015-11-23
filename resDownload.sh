@@ -1,6 +1,6 @@
 #! /bin/bash
 
-source dbModify.sh
+#source dbModify.sh
 
 #2503 is http://www.orienteering.ie/result2?oaction=fullSIResult&id=2503
 #League table at http://orienteering.ie/results/leagues/show_table.php?league=Family+Day&date_from=04%2F15&date_to=06%2F15&best_of[Black]=1&best_of[Brown]=7&best_of[Blue]=8&best_of[Green]=8&best_of[Red]=8&best_of[Orange]=8&best_of[Yellow]=7&best_of[Brow+n]=1

@@ -24,6 +24,7 @@ private:
 int main(void) {
     ifstream dbFile ("pointsDB");
     string line;
+    vector<string> fullName;
     vector<string> name;
     int i, noEntries;
     for( i = 0; getline(dbFile, line); i++ ) {;}
@@ -33,7 +34,7 @@ int main(void) {
 
     vector<vector <float> > points;
 //    float points[5];
-    
+
     dbFile.clear();
     dbFile.seekg(0, ios::beg);
     //reset dbFile to the start
@@ -51,11 +52,13 @@ int main(void) {
             switch ( col ) {
                 case 0:
                     name.push_back(s);
+                    fullName.push_back(s);
                     break;
                 case 1:
+                    fullName[lineNo] += ';' + s;
                     name[lineNo] += s;
                     cout << "name " << name[lineNo] << endl; //points[i];
-                    break; 
+                    break;
                 case 2:
                 case 3:
                 case 4:
@@ -66,7 +69,7 @@ int main(void) {
                     cout << "points " << tmpPoints[col-2] << endl; //points[i];
                     break;
                 default:
-                    cout << "Too many columns!" << endl; 
+                    cout << "Too many columns!" << endl;
             }
             col++;
         }
@@ -103,7 +106,7 @@ int main(void) {
                 case 3:
                     raceName[lineNo] += s;
                     cout << "racename " << raceName[lineNo] << endl; //points[i];
-                    break; 
+                    break;
                 default:
                     break;
             }
@@ -155,17 +158,32 @@ int main(void) {
         dbSum += points[j][0];
     }
     // Factor to scale the average to 1000
-    float dbScale = ( dbSum / dbSize ) / 1000;
-    cout << "dbScale " << dbScale << endl;
+    float dbScale = 1000 / ( dbSum / dbSize );
+    cout << "dbScale " << dbScale << " is it 1000? " <<  ( dbSum / dbSize ) * dbScale << endl;
 
     for ( long j = 0; j < dbSize; j++ ) {
         cout << "finalDB " << name[j];
         for ( int i = 0; i < points[j].size(); i++ ) {
-            cout << " " << dbScale * points[j][i];
+            points[j][i] *= dbScale;
+            cout << " " << points[j][i];
         }
         cout << endl;
     }
-    
+
+    // Sort the DB after scaling
+
+    // Overwrite the old DB with the new one.
+    ofstream newDBFile ("pointsDB");
+
+    for ( long j = 0; j < dbSize; j++ ) {
+        newDBFile << fullName[j] << ";";
+        for ( int i = 0; i < points[j].size(); i++ ) {
+            newDBFile << points[j][i] << ";";
+        }
+        newDBFile << "\n";
+    }
+
+    newDBFile.close();
 
     return 0;
 }
