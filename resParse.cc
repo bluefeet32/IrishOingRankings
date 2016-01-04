@@ -189,6 +189,15 @@ int main( void ) {
     cout << "dbScale " << dbScale << " is it 1000? " <<  ( dbSum / dbSize ) * dbScale << endl;
     cout << "athScale " << athScale << " is it 1000? " <<  ( athSum / athSize ) * athScale << endl;
 
+    for ( long j = 0; j < athSize; j++ ) {
+        athList[j].scaleAllPoints( athScale );
+        athList[j].print();
+    }
+
+    // Sort the DB after scaling
+    //FIXME doesn't work yet
+    std::sort( athList.begin(), athList.end() );
+
     for ( long j = 0; j < dbSize; j++ ) {
         cout << "finalDB " << name[j];
         for ( int i = 0; i < points[j].size(); i++ ) {
@@ -198,12 +207,6 @@ int main( void ) {
         cout << endl;
     }
 
-    for ( long j = 0; j < athSize; j++ ) {
-        athList[j].scaleAllPoints( athScale );
-        athList[j].print();
-    }
-
-    // Sort the DB after scaling
 
     // Overwrite the old DB with the new one.
     ofstream newDBFile ("newPointsDB");
