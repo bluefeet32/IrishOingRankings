@@ -31,10 +31,21 @@ public:
     ~Athlete() {
     };
 
+    void clear() {
+        firstName  = "Empty";
+        surName = "Empty";
+        rankPoints = 0;
+        racePoints.clear();
+    }
 
     void modifyName( string inFirstName, string inSurName ) {
         firstName  = inFirstName;
         surName = inSurName;
+    }
+
+    // Get the name with semicolons inclued for searching in files
+    string getSearchName() {
+        return surName + firstName;
     }
 
     void print() const {
@@ -50,11 +61,31 @@ public:
         cout << endl;
     }
 
+    float setRankPoints( float inPoints ) {
+        rankPoints = inPoints;
+    }
+
     float getRankPoints() const {
         return rankPoints;
     }
 
-    float getPoints( int i ) {
+    void scaleAllPoints( float scale ) {
+        rankPoints *= scale;
+        multiset<float>::iterator rPos = racePoints.begin();
+        float tmpPoints[4];
+        int i = 0;
+        for ( rPos = racePoints.begin(); rPos != racePoints.end(); rPos++ ) {
+            tmpPoints[i] =  *rPos * scale;
+            i++;
+        }
+        racePoints.clear();
+
+        for ( int j = 0; j < i; j++ ) {
+            racePoints.insert( tmpPoints[j] );
+        }
+    }
+
+    float getPoints( int i ) const {
         float output;
         if ( i < 0 || i > N - 1 ) {
             output = -1;
