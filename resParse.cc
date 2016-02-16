@@ -78,6 +78,13 @@ int main( void ) {
             }
             col++;
         }
+
+        // In the case that the athlete had a ranking, but no race scores
+        // add their ranking as a race score
+        // Check against 3 since after while(ss) won't happen when col == 3 in this case
+        if ( col == 3 ) {
+            tmpAth.givePoints( tmpAth.getRankPoints() );
+        }
         // clean up the temporary data structures
         athList.push_back( tmpAth );
         tmpAth.clear();
