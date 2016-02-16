@@ -17,8 +17,8 @@ for z in 25; do
         echo $i
         # pull the results
         echo "Downloading results"
-#        curl -s "http://www.orienteering.ie/results/files/$z/${z}${i}.csv" > ${z}${i}.csv
-#        grep Brown ${z}${i}.csv
+        curl -s "http://www.orienteering.ie/results/files/$z/${z}${i}.csv" > ${z}${i}.csv
+        grep Brown ${z}${i}.csv
         if [[ $? == 0 ]]; then
             # We remove any quotation marks
             sed 's/"//g' ${z}${i}.csv > tmp

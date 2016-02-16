@@ -16,52 +16,66 @@ int main( void ) {
     vector<string> fullName;
     vector<string> name;
     int i, noEntries;
-    for( i = 0; getline(dbFile, line); i++ ) {;}
+    // count the number of lines, i.e. number of athletes in the DB
+    for( i = 0; getline( dbFile, line ); i++ ) {;}
     cout << "number of lines " << i << endl;
     noEntries = i;
-    vector<int> id (noEntries);
+    vector<int> id ( noEntries );
 
+    // We create a vector that contains lists of points
     vector<vector <float> > points;
-//    float points[5];
 
+    // Create an list of Athletes
     vector<Athlete> athList;
     Athlete tmpAth ( "tmp", "tmp" );
 
+    //reset dbFile to the start
     dbFile.clear();
     dbFile.seekg(0, ios::beg);
-    //reset dbFile to the start
+
+    // Read the Athletes and their points from the DB
+    // the DB file is ; delimted
+    // This has the format:
+    // surname;forename;rankPoints;race1Points;race2Points;race3Points;race4Points;
     int lineNo = 0;
     while ( dbFile ) {
-        if ( !getline(dbFile, line) ) break;
+        if ( !getline( dbFile, line ) ) break;
         cout << "lineNo " << lineNo << ": " << line << endl;
 
         istringstream ss( line );
-        int col = 0;
         vector<float> tmpPoints;
+        int col = 0;
         while ( ss ) {
             string s;
+            // Read a string with ; as the delimiter between strings
             if ( !getline( ss, s, ';' ) ) break;
+            // Use a switch to do the appropriate column based action
             switch ( col ) {
+                // column 0 is the surname
                 case 0:
                     name.push_back( s );
                     fullName.push_back( s );
                     break;
+                // column 1 is the forename
                 case 1:
                     tmpAth.modifyName( s, name[lineNo] );
                     fullName[lineNo] += ';' + s;
                     name[lineNo] += s;
                     cout << "name " << name[lineNo] << endl; //points[i];
                     break;
+                // column 2 is the athletes current ranking score
+                // Note that there is no break as we want give the athlete these points
                 case 2:
                     tmpAth.setRankPoints( stof ( s ) );
                 case 3:
                 case 4:
                 case 5:
                 case 6:
-//                    s >> points[i-2];
                     if ( col != 2 ) {
                         tmpAth.givePoints( stof ( s ) );
                     }
+// FIXME Why do I need tmpPoints as well as tmpAth?
+// I don't only here for testing
                     tmpPoints.push_back( stof( s ) );
                     cout << "points " << tmpPoints[col-2] << endl; //points[i];
                     break;
@@ -70,9 +84,11 @@ int main( void ) {
             }
             col++;
         }
+        // clean up the temporary data structures
         athList.push_back( tmpAth );
         tmpAth.clear();
         points.push_back( tmpPoints );
+        tmpPoints.clear();
         lineNo++;
     }
 
@@ -85,18 +101,20 @@ int main( void ) {
     }
 //    cout << "points " << points[0][0] << " " << points[0][1] << endl; //points[i];
 
-    //parse the new results file
-    ifstream resFile("25/pointsRes2503");
+//FIXME need to pass an argument to set what this file is
+    // Parse the new results file
+    // This has the format:
+    // points;surname;forename
+    ifstream resFile( "25/pointsRes2503" );
     lineNo = 0;
-    vector<string> raceName;
-    vector<float> racePoints;
+    vector<string> raceName; // Vector containing the names of Athletes for the race
+    vector<float> racePoints; // Vector of the points of the athletes for a race
     while ( resFile ) {
         if ( !getline(resFile, line) ) break;
         cout << "lineNo " << lineNo << ": " << line << endl;
 
         istringstream ss( line );
         int col = 0;
-        vector<float> tmpPoints;
         while ( ss ) {
             string s;
             if ( !getline( ss, s, ';' ) ) break;
@@ -105,7 +123,7 @@ int main( void ) {
                     racePoints.push_back( stof( s ) );
                     break;
                 case 2:
-                    raceName.push_back(s);
+                    raceName.push_back( s );
                     break;
                 case 3:
                     raceName[lineNo] += s;
@@ -121,13 +139,16 @@ int main( void ) {
 
     resFile.close();
 
-    //find raceName in the DBnames list
+//FIXME should really find raceName in the AthList
+// I do, this is legacy
+    // Find each raceName in the DBnames list
     long raceSize = raceName.size();
     long dbSize = name.size();
     cout << raceSize << " " << dbSize << endl;
 
     for ( long i = 0; i < raceSize; i++ ) {
         long j;
+        // Iterate to find the matching name
         for ( j = 0; j < dbSize; j++ ) {
             if ( raceName[i] == name[j] ) {
                 cout << "raceName " << raceName[i] << " dbName " << name[j] << endl;
@@ -151,16 +172,17 @@ int main( void ) {
 
     cout << "\n";
 
+    // Find each racename in the athList
     long athSize = athList.size();
     for ( long i = 0; i < raceSize; i++ ) {
         long j;
         for ( j = 0; j < athSize; j++ ) {
             if ( raceName[i] == athList[j].getSearchName() ) {
                 cout << "raceName " << raceName[i] << " athName " << athList[j].getSearchName() << endl;
+                athList[j].givePoints( racePoints[i] );
                 break;
             }
         }
-        athList[j].givePoints( racePoints[i] );
     }
 
     // Average all the rows into the first points column
@@ -195,7 +217,6 @@ int main( void ) {
     }
 
     // Sort the DB after scaling
-    //FIXME doesn't work yet
     std::sort( athList.begin(), athList.end() );
 
     for ( long j = 0; j < dbSize; j++ ) {
@@ -205,6 +226,11 @@ int main( void ) {
             cout << " " << points[j][i];
         }
         cout << endl;
+    }
+
+    cout << "finalDB ";
+    for ( int i = 0; i < athList.size(); i++ ) {
+        athList[i].print();
     }
 
 
@@ -220,6 +246,13 @@ int main( void ) {
     }
 
     newDBFile.close();
+
+    ofstream newAthDBFile ("newAthPointsDB");
+    for ( long j = 0; j < dbSize; j++ ) {
+        athList[j].printToDbFile( newAthDBFile );
+    }
+    newAthDBFile.close();
+
 
     return 0;
 }

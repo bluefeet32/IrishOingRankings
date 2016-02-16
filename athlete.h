@@ -49,8 +49,7 @@ public:
     }
 
     void print() const {
-        cout << firstName << " " << surName << " " << rankPoints << endl;
-        cout << "\t";
+        cout << firstName << " " << surName << " " << rankPoints << " ";
 //        for ( int i = 0; i < racePoints.size(); i++ ) {
 //            cout << racePoints[i] << " ";
 //        }
@@ -59,6 +58,15 @@ public:
             cout << *rPos << " ";
         }
         cout << endl;
+    }
+
+    void printToDbFile( ofstream &dbFile ) {
+        dbFile << surName << ";" << firstName << ";" << rankPoints << ";";
+        multiset<float>::iterator rPos = racePoints.begin();
+        for ( rPos = racePoints.begin(); rPos != racePoints.end(); rPos++ ) {
+            dbFile << *rPos << ";";
+        }
+        dbFile << endl;
     }
 
     float setRankPoints( float inPoints ) {
@@ -109,19 +117,23 @@ public:
         }
 
         float athAvg = 0;
+        // Would like the athlete to have the average of only the points that they do have,
+        // not the average of 4
+        int iter = 0;
         multiset<float>::iterator rPos = racePoints.begin();
         for ( rPos = racePoints.begin(); rPos != racePoints.end(); rPos++ ) {
             athAvg += *rPos;
+            iter++;
         }
-        rankPoints = athAvg / N;
+        rankPoints = athAvg / iter;
     }
 
     bool operator < ( const Athlete& ath) const {
-        return ( rankPoints > ath.getRankPoints());
+        return ( rankPoints > ath.getRankPoints() );
     }
 
     bool operator > ( const Athlete& ath) const {
-        return ( rankPoints < ath.getRankPoints());
+        return ( rankPoints < ath.getRankPoints() );
     }
 
 
