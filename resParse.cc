@@ -20,7 +20,7 @@ int main( int argc, char **argv ) {
 
     ifstream dbFile ( argv[1] );
     string line;
-    vector<string> name;
+//    vector<string> name;
     int i, noEntries;
     // count the number of lines, i.e. number of athletes in the DB
     for( i = 0; getline( dbFile, line ); i++ ) {;}
@@ -121,7 +121,10 @@ int main( int argc, char **argv ) {
     lineNo = 0;
     vector<string> raceName; // Vector containing the names of Athletes for the race
     vector<float> racePoints; // Vector of the points of the athletes for a race
+    vector<Athlete> raceAthList; //We use the athlete class to store athletes in. This makes it easy to compare names and create a new Athlete in the DB
+    tmpAth.clear();
     while ( resFile ) {
+        string name;
         if ( !getline(resFile, line) ) break;
 //        cout << "lineNo " << lineNo << ": " << line << endl;
 
@@ -133,19 +136,26 @@ int main( int argc, char **argv ) {
             switch ( col ) {
                 case 0:
                     racePoints.push_back( stof( s ) );
+                    tmpAth.setRankPoints( stof( s ) );
                     break;
                 case 2:
                     raceName.push_back( s );
+                    name = s;
                     break;
                 case 3:
                     raceName[lineNo] += s;
+                    tmpAth.modifyName( s, name );
 //                    cout << "racename " << raceName[lineNo] << endl; //points[i];
                     break;
                 default:
                     break;
+
             }
             col++;
         }
+        // clean up the temporary data structures
+        raceAthList.push_back( tmpAth );
+        tmpAth.clear();
         lineNo++;
     }
 
@@ -156,22 +166,34 @@ int main( int argc, char **argv ) {
 
     resFile.close();
 
-    // Find each raceName in the DBnames list
-    long raceSize = raceName.size();
 
     // Find each racename in the athList
-    long athSize = athList.size();
-    cout << raceSize << " " << athSize << endl;
+    long raceSize = raceName.size();
+    bool newAth = true;
+    cout << raceName.size() << " " << athList.size() << endl;
     for ( long i = 0; i < raceSize; i++ ) {
         long j;
+        // athSize can change before each time we do this loop
+        // need this, e.g. same new athlete runs twice in one day
+        long athSize = athList.size();
+        newAth = true;
         for ( j = 0; j < athSize; j++ ) {
             if ( raceName[i] == athList[j].getSearchName() ) {
-//                cout << "raceName " << raceName[i] << " athName " << athList[j].getSearchName() << endl;
+                cout << "raceName " << raceName[i] << " athName " << athList[j].getSearchName() << endl;
                 athList[j].givePoints( racePoints[i] );
+                newAth = false;
                 break;
             }
         }
+        // This athlete wasn't in the database so create them
+        if ( newAth == true ) {
+            // We only populated their rank points earlier, so this is their only race score
+            raceAthList[i].givePoints( raceAthList[i].getRankPoints() );
+
+            athList.push_back( raceAthList[i] );
+        }
     }
+    long athSize = athList.size();
 
     // Average all the rows into the first points column
     // Also compute the scaling factor necessary to make the average DB score to be 1000

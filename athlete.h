@@ -43,9 +43,19 @@ public:
         surName = inSurName;
     }
 
-    // Get the name with semicolons inclued for searching in files
+    // Get the name with semicolons removed for searching in files
     string getSearchName() {
         return surName + firstName;
+    }
+
+    // Get the surName
+    string getSurName() {
+        return surName;
+    }
+
+    // Get the firstName
+    string getFirstName() {
+        return firstName;
     }
 
     void print() const {
@@ -136,5 +146,11 @@ public:
         return ( rankPoints < ath.getRankPoints() );
     }
 
+//FIXME for now we don't also copy the race points
+//    bool operator = ( const Athlete& ath ) const {
+//        firstName  = ath.getFirstName();
+//        surName    = ath.getSurName();
+//        rankPoints = ath.getRankPoints();
+//    }
 
 };
