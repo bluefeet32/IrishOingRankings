@@ -11,13 +11,25 @@
 
 using namespace std;
 
-int main( void ) {
-    ifstream dbFile ("pointsDB");
+int main( int argc, char **argv ) {
+
+    if ( argc != 3 ) {
+        cout <<  "Usage:\n\t ./resParse Database_file race_file" << endl;
+        return 1;
+    }
+
+    ifstream dbFile ( argv[1] );
     string line;
     vector<string> name;
     int i, noEntries;
     // count the number of lines, i.e. number of athletes in the DB
     for( i = 0; getline( dbFile, line ); i++ ) {;}
+
+    if ( i == 0 ) {
+        cout << "Error: Database file is empty." << endl;
+        return 2;
+    }
+
     cout << "number of lines " << i << endl;
     noEntries = i;
     vector<int> id ( noEntries );
@@ -95,9 +107,9 @@ int main( void ) {
 
     // Sort the athlete list
     sort( athList.begin(), athList.end() );
-    for ( int i = 0; i < athList.size(); i++ ) {
-        athList[i].print();
-    }
+//    for ( int i = 0; i < athList.size(); i++ ) {
+//        athList[i].print();
+//    }
     cout << "\n";
 //    cout << "points " << points[0][0] << " " << points[0][1] << endl; //points[i];
 
@@ -105,7 +117,7 @@ int main( void ) {
     // Parse the new results file
     // This has the format:
     // points;surname;forename
-    ifstream resFile( "25/pointsRes2503" );
+    ifstream resFile( argv[2] );
     lineNo = 0;
     vector<string> raceName; // Vector containing the names of Athletes for the race
     vector<float> racePoints; // Vector of the points of the athletes for a race
@@ -137,6 +149,11 @@ int main( void ) {
         lineNo++;
     }
 
+    if ( lineNo == 0 ) {
+        cout << "Error: race_file is empty." << endl;
+        return 3;
+    }
+
     resFile.close();
 
     // Find each raceName in the DBnames list
@@ -158,9 +175,9 @@ int main( void ) {
 
     // Average all the rows into the first points column
     // Also compute the scaling factor necessary to make the average DB score to be 1000
-    for ( int i = 0; i < athList.size(); i++ ) {
-        athList[i].print();
-    }
+//    for ( int i = 0; i < athList.size(); i++ ) {
+//        athList[i].print();
+//    }
     cout << "\n";
     float athSum = 0;
     for ( long i = 0; i < athList.size(); i++ ) {

@@ -13,11 +13,12 @@ for z in 25; do
 #    for i in `seq -w 01 99`; do
     # iterate over the results in this folder on o.ie
 #    for i in `seq -w 03 05`; do
-    for i in `seq -w 03 03`; do
+    for i in `seq -w 03 05`; do
         echo $i
         # pull the results
         echo "Downloading results"
         curl -s "http://www.orienteering.ie/results/files/$z/${z}${i}.csv" > ${z}${i}.csv
+#FIXME for now we only do results on Brown
         grep Brown ${z}${i}.csv
         if [[ $? == 0 ]]; then
             # We remove any quotation marks
@@ -69,6 +70,11 @@ for z in 25; do
             done
 
 #            dbModify($z, $i);
+            cd ..
+            pwd
+            ls
+            ./resParse ./newAthPointsDB ${z}/pointsRes${z}${i}
+            cd $z
         fi
     done
 done
