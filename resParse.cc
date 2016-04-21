@@ -1,4 +1,6 @@
 // compile with  g++ -o resParse resParse.cc -std=c++11
+// Reads from the files: pointsDB and 25/pointsRes2503
+// Creates an updated DB with all points rescaled to have an average of 1000
 #include <iostream>
 #include <fstream>
 #include <sstream>
