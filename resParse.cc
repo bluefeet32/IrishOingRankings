@@ -27,12 +27,11 @@ int main( int argc, char **argv ) {
     // count the number of lines, i.e. number of athletes in the DB
     for( i = 0; getline( dbFile, line ); i++ ) {;}
 
-    if ( i == 0 ) {
-        cout << "Error: Database file is empty." << endl;
-        return 2;
-    }
+//    if ( i == 0 ) {
+//        cout << "Error: Database file is empty." << endl;
+//        return 2;
+//    }
 
-    cout << "number of lines " << i << endl;
     noEntries = i;
     vector<int> id ( noEntries );
 
@@ -115,7 +114,6 @@ int main( int argc, char **argv ) {
     cout << "\n";
 //    cout << "points " << points[0][0] << " " << points[0][1] << endl; //points[i];
 
-//FIXME need to pass an argument to set what this file is
     // Parse the new results file
     // This has the format:
     // points;surname;forename
@@ -172,7 +170,7 @@ int main( int argc, char **argv ) {
     // Find each racename in the athList
     long raceSize = raceName.size();
     bool newAth = true;
-    cout << raceName.size() << " " << athList.size() << endl;
+//    cout << raceName.size() << " " << athList.size() << endl;
     for ( long i = 0; i < raceSize; i++ ) {
         long j;
         // athSize can change before each time we do this loop
@@ -181,7 +179,7 @@ int main( int argc, char **argv ) {
         newAth = true;
         for ( j = 0; j < athSize; j++ ) {
             if ( raceName[i] == athList[j].getSearchName() ) {
-                cout << "raceName " << raceName[i] << " athName " << athList[j].getSearchName() << endl;
+//                cout << "raceName " << raceName[i] << " athName " << athList[j].getSearchName() << endl;
                 athList[j].givePoints( racePoints[i] );
                 newAth = false;
                 break;
@@ -221,13 +219,15 @@ int main( int argc, char **argv ) {
     std::sort( athList.begin(), athList.end() );
 
     cout << "finalDB ";
-    for ( int i = 0; i < athList.size(); i++ ) {
+//    for ( int i = 0; i < athList.size(); i++ ) {
+    for ( int i = 0; i < 1; i++ ) {
         athList[i].print();
     }
     cout << "\n";
 
     // Create the new DB.
-    ofstream newAthDBFile ("newAthPointsDB");
+//    ofstream newAthDBFile ("newAthPointsDB");
+    ofstream newAthDBFile ( argv[1]);
     for ( long j = 0; j < athSize; j++ ) {
         athList[j].printToDbFile( newAthDBFile );
     }
