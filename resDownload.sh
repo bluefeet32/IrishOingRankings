@@ -4,7 +4,7 @@
 
 #TODO
 # Check if consecutive results are the same as it seems they often are on o.ie
-#
+# Work out if people switch courses enough
 
 
 
@@ -18,7 +18,7 @@ for z in 25; do
 #    for i in `seq -w 01 99`; do
     # iterate over the results in this folder on o.ie
 #    for i in `seq -w 03 05`; do
-    for i in `seq -w 03 50`; do
+    for i in `seq -w 30 50`; do
         csvFile=${z}${i}.csv
         echo $i
         # pull the results
@@ -69,6 +69,12 @@ for z in 25; do
                 awk -F ';' '{print $39}' $csvFile  | sort | uniq | head -n -1 > courseList
                 # Loop over the courses
                 while read course; do
+#echo $course
+                    # Regular expression to check course is a number (e.g. rogaine messes it up)
+                    re='^[0-9]+$'
+                    if ! [[ $course =~ $re ]] ; then
+                       continue;
+                    fi
                     awk -v course=$course -F ';' '$40 == course' newTmp > tmp 
                     # Must add last column of runnings rankings at this points
                     # Columns we select are:
@@ -76,19 +82,25 @@ for z in 25; do
                     awk -F ';' '{print $1";"$5";"$6";"$13";"$17";"$40}' tmp  > ${course}Res
                     #awk '{sum += $3; sumsq=$1*$1} END { if (NR > 0) print sqrt(sumsq/NR - (sum/NR)**2)}' ${course}Res #| awk -F ':' '{print $1+$2/60}' | head -n 1
                     awk -F ';' '{print $4}' ${course}Res | awk -F ':' '{print $1+$2/60}' > ${course}Times
-                    meanPoints=$(awk '{sum+=$1} END { print (sum/NR) }' ${course}Res)
-                    stdDevPoints=$(awk -v sum=$meanPoints -F ';' '{array[NR]=$1} END {for(x=1;x<=NR;x++) {susq+=((array[x]-sum)^2);}print sqrt(susq/NR)}' ${course}Res)
+                    meanPoints=$(awk -F ';' '{sum+=$1} END { print (sum/NR) }' ${course}Res)
+                    stdDevPoints=$(awk -F ';'  -v sum=$meanPoints -F ';' '{array[NR]=$1} END {for(x=1;x<=NR;x++) {susq+=((array[x]-sum)^2);}print sqrt(susq/NR)}' ${course}Res)
 #                    echo meanPoints $meanPoints
 #                    echo stdDevPoints $stdDevPoints
-                    mean=$(awk '{sum+=$1} END { print (sum/NR) }' ${course}Times)
+                    if [[ $meanPoints == 0 ]]; then
+                        meanPoints=200
+                    fi
+                    if [[ $stdDevPoints == 0 ]]; then
+                        stdDevPoints=10
+                    fi
+                    mean=$(awk -F ';'  '{sum+=$1} END { print (sum/NR) }' ${course}Times)
 #                    echo mean $mean
-                    stdDev=$(awk -v sum=$mean '{array[NR]=$1} END {for(x=1;x<=NR;x++) {susq+=((array[x]-sum)^2);}print sqrt(susq/NR)}' ${course}Times)
+                    stdDev=$(awk -F ';'  -v sum=$mean '{array[NR]=$1} END {for(x=1;x<=NR;x++) {susq+=((array[x]-sum)^2);}print sqrt(susq/NR)}' ${course}Times)
 #                    echo stdDev $stdDev
-                    awk -v sDev=$stdDev -v mean=$mean -v mP=$meanPoints sP=$stdDevPoints'{ print 1000+(100*(mean - $1)/sDev) }' ${course}Times > ${course}Points
+                    awk -F ';'  -v sDev=$stdDev -v mean=$mean -v mP=$meanPoints sP=$stdDevPoints'{ print 1000+(100*(mean - $1)/sDev) }' ${course}Times > ${course}Points
                     #Points = mP + ( sP * ( - time + meanTime ) ) / sDev
-                    awk -v sDev=$stdDev -v mean=$mean -v mP=$meanPoints sP=$stdDevPoints'{ print mP + ( sP * ( mean - $1 ) / sDev ) }' ${course}Times > ${course}RankPoints
+                    awk -F ';'  -v sDev=$stdDev -v mean=$mean -v mP=$meanPoints sP=$stdDevPoints'{ print mP + ( sP * ( mean - $1 ) / sDev ) }' ${course}Times > ${course}RankPoints
                     # Ensure 0 is the lowest possible score
-                    awk '{if ( $1 < 0 ) { print 0 } else { print $1 } }' ${course}RankPoints > ${course}tmp
+                    awk -F ';'  '{if ( $1 < 0 ) { print 0 } else { print $1 } }' ${course}RankPoints > ${course}tmp
                     mv ${course}tmp ${course}RankPoints
 
                     # Paste the points into the result list

@@ -189,6 +189,9 @@ int main( int argc, char **argv ) {
         if ( newAth == true ) {
             // We only populated their rank points earlier, so this is their only race score
             raceAthList[i].givePoints( raceAthList[i].getRankPoints() );
+            raceAthList[i].givePoints( 1000 );
+            raceAthList[i].givePoints( 1000 );
+            raceAthList[i].givePoints( 1000 );
 
             athList.push_back( raceAthList[i] );
         }
@@ -211,9 +214,9 @@ int main( int argc, char **argv ) {
 
 //    assert( ( athSum / athSize ) * athScale - 1000 < 1e-6 );
 
-    for ( long j = 0; j < athSize; j++ ) {
-        athList[j].scaleAllPoints( athScale );
-    }
+//    for ( long j = 0; j < athSize; j++ ) {
+//        athList[j].scaleAllPoints( athScale );
+//    }
 
     // Sort the DB after scaling
     std::sort( athList.begin(), athList.end() );
