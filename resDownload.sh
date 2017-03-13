@@ -18,11 +18,12 @@ for z in 25; do
 #    for i in `seq -w 01 99`; do
     # iterate over the results in this folder on o.ie
 #    for i in `seq -w 03 05`; do
-    for i in `seq -w 30 50`; do
+    for i in `seq -w 01 49`; do
         csvFile=${z}${i}.csv
         echo $i
         # pull the results
 #        echo "Downloading results"
+        curl -s "http://www.orienteering.ie/result2?oaction=moreResult&id=${z}${i}" | grep Date > ${z}${i}Date
         curl -s "http://www.orienteering.ie/results/files/$z/${z}${i}.csv" > ${z}${i}.csv
         if [ -f $csvFile ]; then
             if [[ $? == 0 ]]; then
@@ -47,12 +48,12 @@ for z in 25; do
                         (grep $(head -n $line tmp | tail -n 1 | awk -F ';' '{print $4";"$5}') $dbFile || printf "\n") | awk -F ';' '{print $3}' >> resultsPoints
                     done
                 else
-                    # There is no database file so we will initialise the system by giving all of these competitors 1000 points
+                    # There is no database file so we will initialise the system by giving the competitors points decreasing from 500.
                     touch ../pointsDB
-                    pts=$(expr 1000 + 1)
+                    pts=$(expr 500 + 1)
                     for line in `seq -w 2 $lines`; do
                         echo $pts >> resultsPoints
-                        pts=$(expr $pts - 1)
+                        pts=$(expr $pts - 2)
                     done
                 fi
 #FIXME what about when none of the competitors were in the DB? How will the points be calculated for this race?

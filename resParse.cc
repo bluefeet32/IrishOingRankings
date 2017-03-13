@@ -10,6 +10,7 @@
 #include <assert.h>
 
 #include "athlete.h"
+//#include "race.h"
 
 using namespace std;
 
@@ -189,9 +190,9 @@ int main( int argc, char **argv ) {
         if ( newAth == true ) {
             // We only populated their rank points earlier, so this is their only race score
             raceAthList[i].givePoints( raceAthList[i].getRankPoints() );
-            raceAthList[i].givePoints( 1000 );
-            raceAthList[i].givePoints( 1000 );
-            raceAthList[i].givePoints( 1000 );
+            raceAthList[i].givePoints( 100 );
+            raceAthList[i].givePoints( 100 );
+            raceAthList[i].givePoints( 100 );
 
             athList.push_back( raceAthList[i] );
         }
